@@ -7,7 +7,6 @@ import io.quarkus.oidc.IdToken;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 import io.quarkus.security.Authenticated;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
@@ -28,9 +27,6 @@ public class UserInfo {
 
 	@Inject
 	Template user;
-	@Inject
-	@ConfigProperty(name = "quarkus.oidc.client-id")
-	String clientId;
 
 	@Inject
 	Principal principal;
@@ -56,7 +52,6 @@ public class UserInfo {
 		TypeReference<Map<String, Object>> typeRef = new TypeReference<>() {
 		};
 		return user
-			.data("clientId", clientId)
 			.data("principal", principal.getName())
 			.data("accessToken", objectMapper.writeValueAsString(accessToken))
 			.data("rawAccessToken", accessToken.getRawToken())

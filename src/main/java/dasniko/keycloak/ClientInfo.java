@@ -7,7 +7,6 @@ import io.quarkus.oidc.client.OidcClient;
 import io.quarkus.oidc.client.Tokens;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jose4j.base64url.Base64;
 
 import javax.annotation.PostConstruct;
@@ -29,8 +28,6 @@ public class ClientInfo {
 	@Inject
 	ObjectMapper objectMapper;
 	@Inject
-	@ConfigProperty(name = "quarkus.oidc.client-id")
-	String clientId;
 
 	volatile Tokens tokens;
 
@@ -50,7 +47,6 @@ public class ClientInfo {
 		String header = new String(Base64.decode(parts[0]));
 		String payload = new String(Base64.decode(parts[1]));
 		return client
-			.data("clientId", clientId)
 			.data("header", objectMapper.writeValueAsString(objectMapper.readValue(header, typeRef)))
 			.data("payload", objectMapper.writeValueAsString(objectMapper.readValue(payload, typeRef)))
 			.data("accessToken", accessToken);
