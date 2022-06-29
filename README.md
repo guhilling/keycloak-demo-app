@@ -1,68 +1,26 @@
-# keycloak-demo-app Project
+# keycloak-demo-app
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+Displays some information about the authenticated user and the configured client (service account has to be enabled).
 
-If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
+Available as Docker image: [dasniko/keycloak-demo-app](https://hub.docker.com/r/dasniko/keycloak-demo-app)
 
-## Running the application in dev mode
+Example `docker-compose.yml`:
 
-You can run your application in dev mode that enables live coding using:
-```shell script
-./mvnw compile quarkus:dev
+```
+version: '3'
+services:
+  app:
+    image: dasniko/keycloak-demo-app:latest
+    # command: ["wait-for-it.sh", "keycloak:8080", "--", "./application", "-Dquarkus.http.host=0.0.0.0"]
+    environment:
+      - QUARKUS_OIDC_AUTH_SERVER_URL=http://keycloak:8080/realms/demo
+      - QUARKUS_OIDC_CLIENT_ID=quarkus-app
+      - QUARKUS_OIDC_CREDENTIALS_SECRET=some-super-secret-value
+    ports:
+      - "8080:8080"
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
+You can also start it together with a Keycloak server in one compose file, but then you have to wait for Keycloak to start, before this app can be started.
+In this case, just use the outcommented command in above example.
 
-## Packaging and running the application
-
-The application can be packaged using:
-```shell script
-./mvnw package
-```
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
-
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
-
-If you want to build an _über-jar_, execute the following command:
-```shell script
-./mvnw package -Dquarkus.package.type=uber-jar
-```
-
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
-
-## Creating a native executable
-
-You can create a native executable using: 
-```shell script
-./mvnw package -Pnative
-```
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using: 
-```shell script
-./mvnw package -Pnative -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./target/keycloak-demo-app-1.0.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult https://quarkus.io/guides/maven-tooling.
-
-## Related Guides
-
-- OpenID Connect ([guide](https://quarkus.io/guides/security-openid-connect)): Verify Bearer access tokens and authenticate users with Authorization Code Flow
-- RESTEasy Classic ([guide](https://quarkus.io/guides/resteasy)): REST endpoint framework implementing JAX-RS and more
-- RESTEasy Classic Qute ([guide](https://quarkus.io/guides/qute)): Qute Templating integration for RESTEasy
-
-## Provided Code
-
-### RESTEasy JAX-RS
-
-Easily start your RESTful Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started#the-jax-rs-resources)
-
-### RESTEasy Qute
-
-Create your web page using Quarkus RESTEasy & Qute
-
-[Related guide section...](https://quarkus.io/guides/qute#type-safe-templates)
+There is an example client config [here](./src/test/resources/quarkus-app.json).
